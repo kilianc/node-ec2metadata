@@ -1,0 +1,24 @@
+{
+	"author": "Kilian Ciuffolo <me@nailik.org> (http://nailik.org)",
+	"name": "ec2metadata",
+	"main" : "./lib/ec2metadata.js",
+	"description": "A wrapper for EC2 Instance Metadata API",
+	"keywords": ["ec2", "aws", "metadata", "api", "amazon", "instance"],
+	"version": "0.1.0",
+	"engines": {
+		"node": ">= v0.4.7"
+	},
+	"scripts": {
+		"test": "vows test/*-test.js --spec"
+	},
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/kilianc/node-ec2metadata.git"
+	},
+	"dependencies": {
+		"fnqueue": "1.0.5"
+	},
+	"devDependencies": {
+		"vows": "0.5.x >=0.5.10"
+	}
+}
