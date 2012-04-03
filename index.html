@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>ec2metadata by kilianc</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>ec2metadata</h1>
+        <p>A nodejs wrapper for EC2 Instance Metadata API</p>
+        <p class="view"><a href="https://github.com/kilianc/node-ec2metadata">View the Project on GitHub <small>kilianc/node-ec2metadata</small></a></p>
+        <ul>
+          <li><a href="https://github.com/kilianc/node-ec2metadata/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/kilianc/node-ec2metadata/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/kilianc/node-ec2metadata">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>ec2metadata <img src="http://dl.dropbox.com/u/2208502/maintained.png" alt="project status">
+</h1>
+
+<p>An nodejs API wrapper for the AWS EC2 metadata: <a href="http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/index.html?AESDG-chapter-instancedata.html">aws userguide</a></p>
+
+<h2>Installation with npm</h2>
+
+<pre><code>$ npm install ec2metadata
+</code></pre>
+
+<h2>A smart introduction to EC2 Metadata API</h2>
+
+<p>Amazon EC2 instances can access instance-specific metadata as well as data supplied when launching the instances. This data can be used to build more generic AMIs that can be modified by configuration files supplied at launch time.</p>
+
+<p>For example, if you run web servers for various small businesses, they can all use the same AMI and retrieve their content from the Amazon S3 bucket you specify at launch. To add a new customer at any time, simply create a bucket for the customer, add their content, and launch your AMI.</p>
+
+<p>Metadata is divided into categories. For a list of the categories, see Appendix B: <a href="http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/index.html?instancedata-data-categories.html">Metadata Categories</a>.</p>
+
+<h3>Data Retrieval</h3>
+
+<p>An instance retrieves the data by querying a web server using a Query API. The base URI of all requests is <a href="http://169.254.169.254/latest/">http://169.254.169.254/latest/</a>.</p>
+
+<h3>Security of Launch Data</h3>
+
+<p>Although only your specific instance can access launch data, the data is not protected by cryptographic methods. You should take suitable precautions to protect sensitive data (such as long lived encryption keys).</p>
+
+<p><strong>You are not billed for HTTP requests used to retrieve metadata and user-supplied data.</strong></p>
+
+<h3>Metadata Retrieval</h3>
+
+<p>Requests for a specific metadata resource returns the appropriate value or a 404 HTTP error code if the resource is not available. All metadata is returned as text (content type text/plain).</p>
+
+<p>Requests for a general metadata resource (i.e. an URI ending with a /) return a list of available resources or a 404 HTTP error code if there is no such resource. The list items are on separate lines terminated by line feeds (ASCII 10).</p>
+
+<h2>Usage</h2>
+
+<div class="highlight">
+<pre><span class="nx">EC2Metadata</span><span class="p">.</span><span class="nx">get</span><span class="p">([</span><span class="nb">Array</span><span class="o">|</span><span class="nb">String</span><span class="p">],</span> <span class="nb">Function</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<p>The first parameter is an array of fields, the second one the complete callback.
+EC2Metadata will request all the fields and call the callback at the and.
+You can retrieve a complete list of fields skipping the first parameter of the get function.</p>
+
+<div class="highlight">
+<pre><span class="kd">var</span> <span class="nx">EC2Metadata</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'ec2metadata'</span><span class="p">);</span>
+
+<span class="nx">EC2Metadata</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="s1">'   '</span><span class="p">));</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<p>will output:</p>
+
+<div class="highlight">
+<pre><span class="p">[</span>
+   <span class="s2">"amiid"</span><span class="p">,</span>
+   <span class="s2">"ami-launch-index"</span><span class="p">,</span>
+   <span class="s2">"ami-manifest-path"</span><span class="p">,</span>
+   <span class="s2">"block-device-mapping/"</span><span class="p">,</span>
+   <span class="s2">"hostname"</span><span class="p">,</span>
+   <span class="s2">"instance-action"</span><span class="p">,</span>
+   <span class="s2">"instance-id"</span><span class="p">,</span>
+   <span class="s2">"instance-type"</span><span class="p">,</span>
+   <span class="s2">"kernel-id"</span><span class="p">,</span>
+   <span class="s2">"local-hostname"</span><span class="p">,</span>
+   <span class="s2">"local-ipv4"</span><span class="p">,</span>
+   <span class="s2">"mac"</span><span class="p">,</span>
+   <span class="s2">"network/"</span><span class="p">,</span>
+   <span class="s2">"placement/"</span><span class="p">,</span>
+   <span class="s2">"public-hostname"</span><span class="p">,</span>
+   <span class="s2">"public-ipv4"</span><span class="p">,</span>
+   <span class="s2">"public-keys/"</span><span class="p">,</span>
+   <span class="s2">"reservation-id"</span><span class="p">,</span>
+   <span class="s2">"security-groups"</span>
+<span class="p">]</span>
+</pre>
+</div>
+
+
+<p>You can use each field as query, the callback data object will contains all the requested
+fields with a camel case converted name.</p>
+
+<div class="highlight">
+<pre><span class="nx">EC2Metadata</span><span class="p">.</span><span class="nx">get</span><span class="p">([</span><span class="s1">'public-hostname'</span><span class="p">,</span> <span class="s1">'local-ipv4'</span><span class="p">,</span> <span class="s1">'instance-id'</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Something went wrong: '</span> <span class="o">+</span> <span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">publicHostname</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">localIpv4</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">instanceId</span><span class="p">);</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<p>A request the name of which does not end with a slash, will populate the data object with a string.
+A request the name of which ends with a slash, will populate the data object with an Array.</p>
+
+<h2>Tests</h2>
+
+<p>In order to run tests, you must deploy on a amazon ec2 instance and run <code>npm install</code>.</p>
+
+<pre><code>$ npm test
+</code></pre>
+
+<h2>License</h2>
+
+<p><em>This software is released under the MIT license cited below</em>.</p>
+
+<pre><code>Copyright (c) 2010 Kilian Ciuffolo, me@nailik.org. All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the 'Software'), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/kilianc">kilianc</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
