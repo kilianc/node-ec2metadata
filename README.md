@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/kilianc/node-ec2metadata.png)](http://travis-ci.org/kilianc/node-ec2metadata)
 # node-ec2metadata ![project status](http://dl.dropbox.com/u/2208502/maintained.png)
 
 An API wrapper for the AWS EC2 metadata: [aws userguide](http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/index.html?AESDG-chapter-instancedata.html)
